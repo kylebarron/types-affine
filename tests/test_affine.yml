@@ -1,0 +1,59 @@
+- case: constructor_checks_with_6_args
+  main: |
+    from affine import Affine
+    a = Affine(1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+    b = Affine(1, 1, 1, 1, 1, 1)
+- case: constructor_fails_with_5_args
+  main: |
+    from affine import Affine
+    a = Affine(1, 1, 1, 1, 1)
+  out: |
+    main:2: error: Missing positional argument "f" in call to "Affine"
+- case: constructor_fails_with_non_numeric_args
+  main: |
+    from affine import Affine
+    a = Affine('1', 2, 3, 4, 5, 6)
+    b = Affine((1, 2), 2, 3, 4, 5, 6)
+  out: |
+    main:2: error: Argument 1 to "Affine" has incompatible type "str"; expected "float"
+    main:3: error: Argument 1 to "Affine" has incompatible type "Tuple[int, int]"; expected "float"
+- case: from_gdal_checks
+  main: |
+    from affine import Affine
+    a = Affine.from_gdal(1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+    b = Affine.from_gdal(1, 1, 1, 1, 1, 1)
+
+# Examples from Affine documentation
+- case: affine_return_values
+  main: |
+    from affine import Affine
+    a: Affine = Affine.from_gdal(1, 1, 1, 1, 1, 1)
+    b: Affine = Affine.identity()
+    c: Affine = Affine.translation(1.0, 5.0)
+    d: Affine = Affine.scale(2.0)
+    e: Affine = Affine.shear(45.0, 45.0)
+    f: Affine = Affine.rotation(45.0)
+
+- case: affine_mult_tuple_returns_tuple
+  main: |
+    from affine import Affine
+    from typing import Tuple
+    a: Tuple[float, float] = Affine.translation(1.0, 5.0) * (1.0, 1.0)
+    b: Tuple[float, float] = Affine.rotation(45.0) * (1.0, 1.0)
+
+- case: affine_mult_affine_returns_affine
+  main: |
+    from affine import Affine
+    a: Affine = Affine.translation(1.0, 5.0) * Affine.rotation(45.0)
+
+- case: affine_pixel_example_and_reverse
+  main: |
+    from affine import Affine
+    from typing import Tuple
+    geotransform = (-237481.5, 425.0, 0.0, 237536.4, 0.0, -425.0)
+    fwd = Affine.from_gdal(*geotransform)
+    col, row = 0, 100
+    out1: Tuple[float, float] = fwd * (col, row)
+
+    rev = ~fwd
+    out2: Tuple[float, float] = rev * fwd * (col, row)

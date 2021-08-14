@@ -1,4 +1,4 @@
-name: CI
+github name: CI
 
 # On every pull request, but only on push to master
 on:
@@ -12,9 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Expand this once we add tests beyond pre commit
-        # python-version: [3.6, 3.7, 3.8, 3.9]
-        python-version: [3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,12 +22,20 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.1.7
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pre-commit
+          poetry install
+
+      - name: Run tests
+        run: |
+          poetry run pytest
 
       # Run pre-commit (only for python-3.8)
       - name: run pre-commit
         if: matrix.python-version == 3.8
-        run: pre-commit run --all-files
+        run: poetry run pre-commit run --all-files
