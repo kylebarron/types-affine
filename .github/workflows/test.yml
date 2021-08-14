@@ -1,0 +1,35 @@
+name: CI
+
+# On every pull request, but only on push to master
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Expand this once we add tests beyond pre commit
+        # python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pre-commit
+
+      # Run pre-commit (only for python-3.8)
+      - name: run pre-commit
+        if: matrix.python-version == 3.8
+        run: pre-commit run --all-files
