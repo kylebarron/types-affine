@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "types-affine"
+version = "0.1.0"
+description = "Types for the Affine package"
+authors = ["Kyle Barron <kylebarron2@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/kylebarron/types-affine"
+packages = [
+    { include = "affine-stubs" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.910"
+pytest-mypy-plugins = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
