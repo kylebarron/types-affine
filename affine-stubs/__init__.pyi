@@ -1,4 +1,4 @@
-from typing import Any, NamedTuple, NoReturn, Optional, Tuple, TypeVar, Union
+from typing import NoReturn, Optional, Tuple, TypeVar, Union
 
 class AffineError(Exception): ...
 class TransformNotInvertibleError(AffineError): ...
@@ -6,18 +6,24 @@ class UndefinedRotationError(AffineError): ...
 
 T = TypeVar("T", "Affine", Tuple[float, float])
 
-class Affine(NamedTuple):
+# We don't subclass from NamedTuple because the implementation of Affine breaks some
+# typing requirements, especially
+# https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+# Because the typing of `__mul__` of NamedTuple is tuple input, tuple output, we can't
+# provide a case where input is Affine and output is Affine, as that would break the
+# Liskov principle.
+class Affine:
     a: float
     b: float
     c: float
     d: float
     e: float
     f: float
-    g: float
-    h: float
-    i: float
+    g: float = ...
+    h: float = ...
+    i: float = ...
 
-    precision: float
+    precision: float = ...
     def __new__(cls, a: float, b: float, c: float, d: float, e: float, f: float): ...
     @classmethod
     def from_gdal(
