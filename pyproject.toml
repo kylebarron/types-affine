@@ -8,6 +8,7 @@ repository = "https://github.com/kylebarron/types-affine"
 packages = [
     { include = "affine-stubs" }
 ]
+include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
 python = "^3.6.1"
@@ -16,6 +17,8 @@ python = "^3.6.1"
 mypy = "^0.910"
 pytest-mypy-plugins = "^1.7.0"
 pre-commit = "^2.14.0"
+twine = "^3.4.2"
+bumpversion = "^0.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
