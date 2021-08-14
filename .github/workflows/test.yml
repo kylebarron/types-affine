@@ -1,4 +1,4 @@
-github name: CI
+name: CI
 
 # On every pull request, but only on push to master
 on:
